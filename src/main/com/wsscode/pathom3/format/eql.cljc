@@ -304,14 +304,18 @@
                      (update idx key merge-ast-children node)
                      (assoc idx key node))))
                idx
-               (:children ast2))]
+               (:children ast2))
+        params (merge (:params ast1) (:params ast2))]
     (-> (or ast1 ast2)
         (cond->
           (seq idx')
           (assoc :children (map-children->children idx'))
 
           (and (seq idx') (not (contains? #{:join :root} (:type ast1))))
-          (assoc :type :join))
+          (assoc :type :join)
+
+          (seq params)
+          (assoc :params params))
         (dissoc :query))))
 
 (defn merge-asts
